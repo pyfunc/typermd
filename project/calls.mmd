@@ -1,0 +1,44 @@
+flowchart LR
+    subgraph examples__tables_panels
+        examples__tables_panels__deps["deps"]
+        examples__tables_panels__info["info"]
+    end
+    subgraph src__typermd
+        src__typermd__renderer__md["md"]
+        src__typermd__logger__Logger____init__["__init__"]
+        src__typermd__help__MarkdownHelpFormatter____init__["__init__"]
+        src__typermd__table["table"]
+        src__typermd__renderer__render_to_string["render_to_string"]
+        src__typermd__renderer___highlight_code["_highlight_code"]
+        src__typermd__renderer__render_markdown["render_markdown"]
+        src__typermd__blockquote["blockquote"]
+        src__typermd__echo["echo"]
+        src__typermd__panel["panel"]
+        src__typermd__renderer__MarkdownRenderer__codeblock["codeblock"]
+        src__typermd__themes__set_theme["set_theme"]
+        src__typermd__renderer__looks_like_markdown["looks_like_markdown"]
+        src__typermd__renderer__MarkdownRenderer____init__["__init__"]
+        src__typermd___get_table_chars["_get_table_chars"]
+        src__typermd__renderer___is_no_color["_is_no_color"]
+        src__typermd__renderer__get_renderer["get_renderer"]
+        src__typermd__themes__init_theme_from_env["init_theme_from_env"]
+        src__typermd__renderer___supports_color["_supports_color"]
+    end
+    src__typermd__echo --> src__typermd__renderer__looks_like_markdown
+    src__typermd__echo --> src__typermd__renderer__render_markdown
+    src__typermd__table --> src__typermd__renderer__get_renderer
+    src__typermd__table --> src__typermd___get_table_chars
+    src__typermd__panel --> src__typermd__renderer__get_renderer
+    src__typermd__blockquote --> src__typermd__renderer__get_renderer
+    src__typermd__themes__init_theme_from_env --> src__typermd__themes__set_theme
+    examples__tables_panels__deps --> src__typermd__table
+    examples__tables_panels__info --> src__typermd__panel
+    src__typermd__logger__Logger____init__ --> src__typermd__renderer___supports_color
+    src__typermd__renderer___supports_color --> src__typermd__renderer___is_no_color
+    src__typermd__renderer__MarkdownRenderer____init__ --> src__typermd__renderer___supports_color
+    src__typermd__renderer__MarkdownRenderer__codeblock --> src__typermd__renderer___highlight_code
+    src__typermd__renderer__render_markdown --> src__typermd__renderer__get_renderer
+    src__typermd__renderer__md --> src__typermd__renderer__render_markdown
+    src__typermd__renderer__render_to_string --> src__typermd__renderer__render_markdown
+    src__typermd__renderer__render_to_string --> src__typermd__renderer___supports_color
+    src__typermd__help__MarkdownHelpFormatter____init__ --> src__typermd__renderer___supports_color

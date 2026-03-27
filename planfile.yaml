@@ -1,0 +1,279 @@
+name: Code Quality Improvement
+project_name: ''
+project_type: prefactoring
+domain: dev-tools
+goal: Improve code quality using prefact
+goals:
+- Fix all prefact-detected issues
+- Improve code maintainability
+- Ensure consistent code style
+quality_gates:
+- metric: Prefact Issues
+  threshold: '0'
+sprints:
+- id: sprint-1
+  name: Code Quality Improvements
+  duration: 2 weeks
+  objectives:
+  - Fix code quality issues
+  task_patterns:
+  - id: ticket-1aaadf0b
+    name: Fix smart-return-type issues
+    description: Resolve 1 smart-return-type issues in examples/logger_usage.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - examples/logger_usage.py
+    rule_id: smart-return-type
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-8b31945f
+    name: Fix ai-boilerplate issues
+    description: Resolve 1 ai-boilerplate issues in examples/logger_usage.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - examples/logger_usage.py
+    rule_id: ai-boilerplate
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-f818abb0
+    name: Fix smart-return-type issues
+    description: Resolve 3 smart-return-type issues in examples/basic.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - examples/basic.py
+    rule_id: smart-return-type
+    count: 3
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-c95da8c6
+    name: Fix ai-boilerplate issues
+    description: Resolve 1 ai-boilerplate issues in examples/basic.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - examples/basic.py
+    rule_id: ai-boilerplate
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-3cb14442
+    name: Fix smart-return-type issues
+    description: Resolve 1 smart-return-type issues in examples/table_styles_demo.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - examples/table_styles_demo.py
+    rule_id: smart-return-type
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-336dbc1c
+    name: Fix ai-boilerplate issues
+    description: Resolve 1 ai-boilerplate issues in examples/table_styles_demo.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - examples/table_styles_demo.py
+    rule_id: ai-boilerplate
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-599bc8cb
+    name: Fix smart-return-type issues
+    description: Resolve 2 smart-return-type issues in examples/tables_panels.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - examples/tables_panels.py
+    rule_id: smart-return-type
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-ecbb61ef
+    name: Fix ai-boilerplate issues
+    description: Resolve 1 ai-boilerplate issues in examples/tables_panels.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - examples/tables_panels.py
+    rule_id: ai-boilerplate
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-ff230778
+    name: Fix string-concat issues
+    description: Resolve 21 string-concat issues in src/typermd/__init__.py
+    task_type: prefactor
+    priority: high
+    estimate: 3d
+    files:
+    - src/typermd/__init__.py
+    rule_id: string-concat
+    count: 21
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-4800a650
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in src/typermd/__init__.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/typermd/__init__.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-618869ef
+    name: Fix llm-generated-code issues
+    description: Resolve 2 llm-generated-code issues in src/typermd/__init__.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/typermd/__init__.py
+    rule_id: llm-generated-code
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-144df807
+    name: Fix ai-boilerplate issues
+    description: Resolve 1 ai-boilerplate issues in src/typermd/__init__.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/typermd/__init__.py
+    rule_id: ai-boilerplate
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-bb8799c7
+    name: Fix string-concat issues
+    description: Resolve 2 string-concat issues in src/typermd/logger.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/typermd/logger.py
+    rule_id: string-concat
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-7ea6e6f7
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in src/typermd/logger.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/typermd/logger.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-9d4a439c
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in src/typermd/help.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/typermd/help.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-bde885b9
+    name: Fix llm-generated-code issues
+    description: Resolve 1 llm-generated-code issues in src/typermd/help.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/typermd/help.py
+    rule_id: llm-generated-code
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-dec5cd15
+    name: Fix string-concat issues
+    description: Resolve 10 string-concat issues in src/typermd/renderer.py
+    task_type: prefactor
+    priority: high
+    estimate: 2d
+    files:
+    - src/typermd/renderer.py
+    rule_id: string-concat
+    count: 10
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-3e29a072
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in src/typermd/renderer.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/typermd/renderer.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-1ccacebb
+    name: Fix magic-numbers issues
+    description: Resolve 4 magic-numbers issues in src/typermd/renderer.py
+    task_type: prefactor
+    priority: medium
+    estimate: 2d
+    files:
+    - src/typermd/renderer.py
+    rule_id: magic-numbers
+    count: 4
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-36459da8
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in src/typermd/themes.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/typermd/themes.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced

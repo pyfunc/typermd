@@ -66,7 +66,7 @@ class TestImports:
     def test_version(self):
         import typermd
 
-        assert typermd.__version__ == "0.1.1"
+        assert typermd.__version__ == "0.1.2"
 
 
 class TestEcho:

@@ -9,7 +9,7 @@ app = typer.Typer(help="Example CLI with markdown rendering")
 def hello(
     name: str = typer.Option("World", "--name", "-n", help="Name to greet"),
     formal: bool = typer.Option(False, "--formal", "-f", help="Use formal greeting"),
-):
+) -> None:
     """Say hello with markdown formatting."""
     if formal:
         typer.md(f"""
@@ -31,7 +31,7 @@ Welcome to **typermd** — beautiful CLI output with *zero effort*.
 
 
 @app.command()
-def status():
+def status() -> None:
     """Show system status with styled output."""
     typer.md("""
 ## 📊 System Status
@@ -48,7 +48,7 @@ All systems **operational**.
 
 
 @app.command()
-def demo():
+def demo() -> None:
     """Demonstrate all markdown features."""
     typer.md("""
 # typermd Feature Demo
@@ -93,4 +93,4 @@ Check out [Typer](https://typer.tiangolo.com) for more info.
 
 
 if __name__ == "__main__":
-    app()
+    typer.Typer()

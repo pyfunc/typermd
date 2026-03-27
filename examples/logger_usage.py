@@ -11,7 +11,7 @@ log = get_logger("deploy")
 def deploy(
     env: str = typer.Option("staging", help="Target environment"),
     dry_run: bool = typer.Option(False, help="Dry run mode"),
-):
+) -> None:
     """Simulate a deployment with structured logging."""
     log.info(f"Starting deployment to {env}")
     log.step(1, 4, "Building artifacts...")
@@ -29,4 +29,4 @@ def deploy(
 
 
 if __name__ == "__main__":
-    app()
+    typer.Typer()

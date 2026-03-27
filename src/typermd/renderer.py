@@ -4,7 +4,6 @@ Provides MarkdownRenderer class and convenience functions for rendering
 markdown text with ANSI color codes in the terminal.
 """
 
-from __future__ import annotations
 
 import os
 import re
@@ -13,6 +12,12 @@ import sys
 from dataclasses import dataclass
 from io import StringIO
 from typing import IO, TextIO
+
+# ── Constants ───────────────────────────────────────────────────────────
+
+MAX_LINES_TO_CHECK = 20
+DEFAULT_TERMINAL_WIDTH = 80
+DEFAULT_PANEL_WIDTH = 42
 
 # ── ANSI helpers ──────────────────────────────────────────────────────────
 
@@ -84,7 +89,7 @@ def looks_like_markdown(text: str) -> bool:
     """Heuristic: does the text contain markdown formatting?"""
     lines = text.strip().split("\n")
     score = 0
-    for line in lines[:20]:
+    for line in lines[:MAX_LINES_TO_CHECK]:
         for pat in _MD_PATTERNS:
             if pat.search(line):
                 score += 1
@@ -163,7 +168,7 @@ def _make_highlighters() -> dict[str, list[_HL]]:
         ],
         "toml": [
             _HL(re.compile(r"#.*$", re.M), FG_GRAY),
-            _HL(re.compile(r"^\[.*\]", re.M), FG_CYAN + BOLD),
+            _HL(re.compile(r"^\[.*\]", re.M), f"{FG_CYAN}{BOLD}"),
             _HL(re.compile(r"^[\w._-]+(?=\s*=)", re.M), FG_CYAN),
             _HL(re.compile(r'"[^"]*"|\'[^\']*\''), FG_GREEN),
             _HL(re.compile(r"\b(true|false)\b"), FG_BLUE),
@@ -221,7 +226,7 @@ def _make_highlighters() -> dict[str, list[_HL]]:
                     r"VOLUME|USER|LABEL|HEALTHCHECK|SHELL)\b",
                     re.M,
                 ),
-                FG_BLUE + BOLD,
+                f"{FG_BLUE}{BOLD}",
             ),
             _HL(re.compile(r'"[^"]*"'), FG_GREEN),
         ],
@@ -317,7 +322,7 @@ class MarkdownRenderer:
         try:
             return shutil.get_terminal_size().columns
         except Exception:
-            return 80
+            return DEFAULT_TERMINAL_WIDTH
 
     def _w(self, text: str) -> None:
         """Write text to stream."""
@@ -325,20 +330,20 @@ class MarkdownRenderer:
 
     def _wln(self, text: str = "") -> None:
         """Write line to stream."""
-        self.stream.write(text + "\n")
+        self.stream.write(f"{text}\n")
 
     def _c(self, text: str, *codes: str) -> str:
         """Colorize text if colors enabled."""
         if not self.use_colors or not codes:
             return text
-        return "".join(codes) + text + RESET
+        return f"{''.join(codes)}{text}{RESET}"
 
     # ── Block renderers ───────────────────────────────────────────────
 
     def heading(self, level: int, text: str) -> None:
         colors = [FG_BRIGHT_CYAN, FG_BRIGHT_BLUE, FG_BRIGHT_MAGENTA, FG_CYAN, FG_BLUE, FG_MAGENTA]
         color = colors[min(level - 1, len(colors) - 1)]
-        prefix = "━" * min(level, 3) + " " if level <= 2 else ""
+        prefix = f"{'━' * min(level, 3)}{' ' if level <= 2 else ''}"
         self._wln()
         self._wln(self._c(f"{prefix}{text}", BOLD, color))
         if level <= 2:
@@ -356,7 +361,7 @@ class MarkdownRenderer:
             highlighted = code
         for line in highlighted.split("\n"):
             self._wln(self._c("│ ", DIM) + line)
-        self._wln(self._c(f"└{'─' * 42}┘", DIM))
+        self._wln(self._c(f"└{'─' * DEFAULT_PANEL_WIDTH}┘", DIM))
 
     def blockquote(self, text: str) -> None:
         for line in text.split("\n"):

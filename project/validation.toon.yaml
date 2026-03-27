@@ -1,0 +1,24 @@
+# vallm batch | 34f | 16✓ 2⚠ 1✗ | 2026-03-27
+
+SUMMARY:
+  scanned: 34  passed: 16 (47.1%)  warnings: 2  errors: 1  unsupported: 17
+
+WARNINGS[2]{path,score}:
+  src/typermd/__init__.py,0.97
+    issues[2]{rule,severity,message,line}:
+      complexity.cyclomatic,warning,table has cyclomatic complexity 24 (max: 15),233
+      complexity.lizard_cc,warning,table: CC=22 exceeds limit 15,233
+  src/typermd/renderer.py,0.97
+    issues[1]{rule,severity,message,line}:
+      complexity.lizard_length,warning,_make_highlighters: 129 lines exceeds limit 100,110
+
+ERRORS[1]{path,score}:
+  tests/test_logger_themes.py,0.91
+    issues[1]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'pytest' not found,7
+
+UNSUPPORTED[4]{bucket,count}:
+  *.md,7
+  Dockerfile*,1
+  *.txt,1
+  other,8

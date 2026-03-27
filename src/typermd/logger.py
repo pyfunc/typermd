@@ -13,7 +13,6 @@ Usage:
     log.error("Connection failed")
 """
 
-from __future__ import annotations
 
 import sys
 from typing import TextIO
@@ -53,7 +52,7 @@ class Logger:
     def _c(self, text: str, *codes: str) -> str:
         if not self.use_colors or not codes:
             return text
-        return "".join(codes) + text + RESET
+        return f"{''.join(codes)}{text}{RESET}"
 
     def _emit(self, icon: str, level: str, message: str, color: str) -> None:
         tag = self._c(f"[{level:>7}]", color, BOLD)

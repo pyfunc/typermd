@@ -1,0 +1,40 @@
+# typermd | 54 func | 5f | 1810L | python | 2026-03-27
+
+HEALTH:
+  CC̄=3.0  critical=4 (limit:10)  dup=0  cycles=0
+
+ALERTS[6]:
+  !!! high_fan_out     MarkdownRenderer.render = 23 (limit:10)
+  !!  cc_exceeded      table = 24 (limit:15)
+  !!  high_fan_out     table = 17 (limit:10)
+  !   cc_exceeded      _highlight_code = 15 (limit:15)
+  !   cc_exceeded      MarkdownRenderer.render = 15 (limit:15)
+  !   high_fan_out     _highlight_code = 14 (limit:10)
+
+MODULES[6] (top by size):
+  M[src/typermd/renderer.py] 559L C:2 F:24 CC↑15 D:3 (python)
+  M[src/typermd/__init__.py] 358L C:0 F:5 CC↑24 D:1 (python)
+  M[src/typermd/logger.py] 110L C:1 F:12 CC↑3 D:0 (python)
+  M[src/typermd/themes.py] 108L C:1 F:7 CC↑2 D:0 (python)
+  M[src/typermd/help.py] 104L C:1 F:6 CC↑3 D:0 (python)
+  M[project.sh] 24L C:0 F:0 CC↑0 D:0 (shell)
+  LANGS: python:5/shell:1
+
+HOTSPOTS[3]:
+  ★ MarkdownRenderer.render fan=23  // Render a complete markdown document.
+  ★ table fan=17  // Render a table to the terminal.
+
+Args:
+    headers: Column header labels.
+    ro
+  ★ _highlight_code fan=14  // Apply syntax highlighting to a code block.
+
+REFACTOR[6]:
+  [1] H/H Split god module src/typermd/renderer.py (559L, 2 classes)
+  [2] M/L Split table (CC=24 → target CC<10)
+  [3] M/L Split _highlight_code (CC=15 → target CC<10)
+  [4] M/L Split MarkdownRenderer.render (CC=15 → target CC<10)
+  [5] M/M Reduce MarkdownRenderer.render fan-out (currently 23)
+
+EVOLUTION:
+  2026-03-27 CC̄=3.0 crit=4 1810L // Automated analysis

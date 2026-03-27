@@ -1,0 +1,25 @@
+flowchart TD
+
+    %% Entry points (blue)
+    classDef entry fill:#4dabf7,stroke:#1971c2,color:#fff
+
+    subgraph Core
+        src__typermd__echo["echo"]
+        src__typermd__table{{table CC=24}}
+        src__typermd__blockquote["blockquote"]
+        src__typermd__themes__Theme__get_color["get_color"]
+        src__typermd__themes__get_theme["get_theme"]
+        src__typermd__themes__register_theme["register_theme"]
+        src__typermd__themes__list_themes["list_themes"]
+        src__typermd__themes__is_no_color["is_no_color"]
+        src__typermd__themes__init_theme_from_env["init_theme_from_env"]
+        src__typermd__logger__Logger___c["_c"]
+        src__typermd__logger__Logger___emit["_emit"]
+        src__typermd__logger__Logger__debug["debug"]
+        src__typermd__logger__Logger__info["info"]
+        src__typermd__logger__Logger__success["success"]
+        src__typermd__logger__Logger__warning["warning"]
+        ...["+29 more"]
+    end
+
+    class src__typermd__echo,src__typermd__blockquote,src__typermd__themes__Theme__get_color,src__typermd__themes__get_theme,src__typermd__themes__register_theme,src__typermd__themes__list_themes,src__typermd__themes__is_no_color,src__typermd__themes__init_theme_from_env,src__typermd__logger__Logger___c,src__typermd__logger__Logger___emit entry

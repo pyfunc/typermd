@@ -1,0 +1,56 @@
+# code2llm/evolution | 54 func | 5f | 2026-03-27
+
+NEXT[4] (ranked by impact):
+  [1] !! SPLIT           src/typermd/renderer.py
+      WHY: 559L, 2 classes, max CC=15
+      EFFORT: ~4h  IMPACT: 8385
+
+  [2] !  SPLIT-FUNC      table  CC=24  fan=17
+      WHY: CC=24 exceeds 15
+      EFFORT: ~1h  IMPACT: 408
+
+  [3] !  SPLIT-FUNC      MarkdownRenderer.render  CC=15  fan=23
+      WHY: CC=15 exceeds 15
+      EFFORT: ~1h  IMPACT: 345
+
+  [4] !  SPLIT-FUNC      _highlight_code  CC=15  fan=14
+      WHY: CC=15 exceeds 15
+      EFFORT: ~1h  IMPACT: 210
+
+
+RISKS[1]:
+  ⚠ Splitting src/typermd/renderer.py may break 24 import paths
+
+METRICS-TARGET:
+  CC̄:          3.0 → ≤2.1
+  max-CC:      24 → ≤12
+  god-modules: 1 → 0
+  high-CC(≥15): 3 → ≤1
+  hub-types:   0 → ≤0
+
+PATTERNS (language parser shared logic):
+  _extract_declarations() in base.py — unified extraction for:
+    - TypeScript: interfaces, types, classes, functions, arrow funcs
+    - PHP: namespaces, traits, classes, functions, includes
+    - Ruby: modules, classes, methods, requires
+    - C++: classes, structs, functions, #includes
+    - C#: classes, interfaces, methods, usings
+    - Java: classes, interfaces, methods, imports
+    - Go: packages, functions, structs
+    - Rust: modules, functions, traits, use statements
+
+  Shared regex patterns per language:
+    - import: language-specific import/require/using patterns
+    - class: class/struct/trait declarations with inheritance
+    - function: function/method signatures with visibility
+    - brace_tracking: for C-family languages ({ })
+    - end_keyword_tracking: for Ruby (module/class/def...end)
+
+  Benefits:
+    - Consistent extraction logic across all languages
+    - Reduced code duplication (~70% reduction in parser LOC)
+    - Easier maintenance: fix once, apply everywhere
+    - Standardized FunctionInfo/ClassInfo models
+
+HISTORY:
+  prev CC̄=3.0 → now CC̄=3.0

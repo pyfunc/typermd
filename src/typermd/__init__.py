@@ -14,12 +14,11 @@ Usage:
         typer.echo("Regular text works too")
 
     if __name__ == "__main__":
-        app()
+        typer.Typer()
 """
 
-from __future__ import annotations
 
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 __all__ = [
     # typermd extras
     "md",
@@ -157,17 +156,96 @@ def echo(
 # ── Convenience: table / panel / blockquote ───────────────────────────────
 
 
+def _get_table_chars(style: str) -> dict[str, str]:
+    """Get table border characters for style."""
+    if style == "markdown":
+        return {
+            "horizontal": "-",
+            "vertical": "|",
+            "top_left": "",
+            "top_right": "",
+            "top_mid": "",
+            "mid_left": "|",
+            "mid_right": "|",
+            "mid_mid": "|",
+            "bottom_left": "",
+            "bottom_right": "",
+            "bottom_mid": "",
+        }
+    elif style == "unicode":
+        return {
+            "horizontal": "─",
+            "vertical": "│",
+            "top_left": "┌",
+            "top_right": "┐",
+            "top_mid": "┬",
+            "mid_left": "├",
+            "mid_right": "┤",
+            "mid_mid": "┼",
+            "bottom_left": "└",
+            "bottom_right": "┘",
+            "bottom_mid": "┴",
+        }
+    elif style == "ascii":
+        return {
+            "horizontal": "-",
+            "vertical": "|",
+            "top_left": "+",
+            "top_right": "+",
+            "top_mid": "+",
+            "mid_left": "+",
+            "mid_right": "+",
+            "mid_mid": "+",
+            "bottom_left": "+",
+            "bottom_right": "+",
+            "bottom_mid": "+",
+        }
+    elif style == "minimal":
+        return {
+            "horizontal": "─",
+            "vertical": " ",
+            "top_left": "",
+            "top_right": "",
+            "top_mid": " ",
+            "mid_left": "",
+            "mid_right": "",
+            "mid_mid": " ",
+            "bottom_left": "",
+            "bottom_right": "",
+            "bottom_mid": " ",
+        }
+    else:  # none
+        return {
+            "horizontal": "",
+            "vertical": " ",
+            "top_left": "",
+            "top_right": "",
+            "top_mid": "",
+            "mid_left": "",
+            "mid_right": "",
+            "mid_mid": "",
+            "bottom_left": "",
+            "bottom_right": "",
+            "bottom_mid": "",
+        }
+
+
 def table(
     headers: list[str],
     rows: list[list[str]],
+    style: str = "unicode",
 ) -> None:
     """Render a table to the terminal.
 
     Args:
         headers: Column header labels.
         rows: List of rows (each row is a list of cell strings).
+        style: Table border style - "unicode", "ascii", "minimal", "none", or "markdown".
     """
     renderer = get_renderer()
+
+    # Get table border characters based on style
+    chars = _get_table_chars(style)
 
     # Calculate column widths
     col_widths = [len(h) for h in headers]
@@ -176,26 +254,74 @@ def table(
             if i < len(col_widths):
                 col_widths[i] = max(col_widths[i], len(strip_ansi(str(cell))))
 
-    # Header
-    header_cells = [h.ljust(w) for h, w in zip(headers, col_widths)]
-    sep = renderer._c(" │ ", renderer._c("", "") and "\033[2m")
-    bold = "\033[1m"
-    cyan = "\033[36m"
-    header_line = f"  {sep.join(renderer._c(c, bold, cyan) for c in header_cells)}"
-    renderer._wln(header_line)
+    if style == "markdown":
+        # Generate markdown table
+        # Header row
+        header_row = f"| {' | '.join(h.ljust(w) for h, w in zip(headers, col_widths))} |"
+        renderer._wln(header_row)
+        
+        # Separator row
+        separator_row = f"| {' | '.join('-' * w for w in col_widths)} |"
+        renderer._wln(separator_row)
+        
+        # Data rows
+        for row in rows:
+            row_cells = []
+            for i in range(len(col_widths)):
+                cell = str(row[i]) if i < len(row) else ""
+                w = col_widths[i] if i < len(col_widths) else 10
+                row_cells.append(cell.ljust(w))
+            row_line = f"| {' | '.join(row_cells)} |"
+            renderer._wln(row_line)
+        return
 
-    # Separator
-    sep_line = "  " + "─┼─".join("─" * w for w in col_widths)
-    renderer._wln(renderer._c(sep_line, "\033[2m"))
+    # Top border
+    if chars["top_left"]:
+        top = (
+            chars["top_left"]
+            + chars["top_mid"].join(chars["horizontal"] * w for w in col_widths)
+            + chars["top_right"]
+        )
+        renderer._wln(renderer._c(top, "\033[2m"))
+
+    # Header
+    if headers:
+        header_cells = []
+        for i, h in enumerate(headers):
+            w = col_widths[i] if i < len(col_widths) else 10
+            colored = renderer._c(str(h), "\033[1m", "\033[36m")
+            header_cells.append(colored.ljust(w))
+
+        header_line = f"{chars['vertical']}{chars['vertical'].join(header_cells)}{chars['vertical']}"
+        renderer._wln(header_line)
+
+        # Header separator
+        sep = (
+            chars["mid_left"]
+            + chars["mid_mid"].join(chars["horizontal"] * w for w in col_widths)
+            + chars["mid_right"]
+        )
+        renderer._wln(renderer._c(sep, "\033[2m"))
 
     # Rows
     for row in rows:
-        cells = []
-        for i, w in enumerate(col_widths):
+        row_cells = []
+        for i in range(len(col_widths)):
             cell = str(row[i]) if i < len(row) else ""
-            pad = w - len(strip_ansi(cell))
-            cells.append(cell + " " * max(0, pad))
-        renderer._wln("  " + renderer._c(" │ ", "\033[2m").join(cells))
+            w = col_widths[i] if i < len(col_widths) else 10
+            row_cells.append(cell.ljust(w))
+
+        row_line = f"{chars['vertical']}{chars['vertical'].join(row_cells)}{chars['vertical']}"
+        renderer._wln(row_line)
+
+    # Bottom border
+    if chars["bottom_left"]:
+        bottom = (
+            chars["bottom_left"]
+            + chars["bottom_mid"].join(chars["horizontal"] * w for w in col_widths)
+            + chars["bottom_right"]
+        )
+        renderer._wln(renderer._c(bottom, "\033[2m"))
 
 
 def panel(

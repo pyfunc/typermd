@@ -1,0 +1,56 @@
+# typermd | 6f 1263L | python:5,shell:1 | 2026-03-27
+# stats: 54 func | 0 cls | 6 mod | CC̄=3.0 | critical:3 | cycles:0
+# alerts[5]: fan-out MarkdownRenderer.render=23; CC table=24; fan-out table=17; CC MarkdownRenderer.render=15; CC _highlight_code=15
+# hotspots[5]: MarkdownRenderer.render fan=23; table fan=17; _highlight_code fan=14; panel fan=8; echo fan=7
+# evolution: CC̄ 3.0→3.0 (flat 0.0)
+# Keys: M=modules, D=details, i=imports, e=exports, c=classes, f=functions, m=methods
+M[6]:
+  project.sh,24
+  src/typermd/__init__.py,358
+  src/typermd/help.py,104
+  src/typermd/logger.py,110
+  src/typermd/renderer.py,559
+  src/typermd/themes.py,108
+D:
+  src/typermd/__init__.py:
+    e: echo,_get_table_chars,table,panel,blockquote
+    echo(message;file;nl;err;color)
+    _get_table_chars(style)
+    table(headers;rows;style)
+    panel(content;title;style_color)
+    blockquote(content)
+  src/typermd/renderer.py:
+    e: _HL,MarkdownRenderer,strip_ansi,_is_no_color,_supports_color,looks_like_markdown,_make_highlighters,_highlight_code,get_renderer,render_markdown,md,render_to_string
+    _HL:  # Highlighter rule: pattern + color...
+    MarkdownRenderer: __init__(3),_w(1),_wln(1),_c(1),heading(2),codeblock(2),blockquote(1),horizontal_rule(0),list_item(2),numbered_item(3),paragraph(1),checklist_item(2),_inline(1),render(1)  # Renders markdown text to the terminal with ANSI colors...
+    strip_ansi(text)
+    _is_no_color()
+    _supports_color(stream)
+    looks_like_markdown(text)
+    _make_highlighters()
+    _highlight_code(code;lang)
+    get_renderer(stream;use_colors)
+    render_markdown(text;stream;use_colors)
+    md(text)
+    render_to_string(text)
+  src/typermd/logger.py:
+    e: Logger,get_logger,set_logger
+    Logger: __init__(4),_c(1),_emit(4),debug(1),info(1),success(1),warning(1),error(1),action(2),step(3)  # Markdown-aware structured logger.
+
+All output is emitted as ...
+    get_logger(name;verbose)
+    set_logger(logger)
+  src/typermd/help.py:
+    e: MarkdownHelpFormatter,install_help_formatter
+    MarkdownHelpFormatter(click.HelpFormatter): __init__(0),_colorize(1),write(1),write_heading(1),write_usage(3)  # Click HelpFormatter that renders markdown in help text...
+    install_help_formatter(app)
+  src/typermd/themes.py:
+    e: Theme,get_theme,set_theme,register_theme,list_themes,is_no_color,init_theme_from_env
+    Theme: get_color(1)  # Color theme definition with named color slots...
+    get_theme()
+    set_theme(name)
+    register_theme(theme)
+    list_themes()
+    is_no_color()
+    init_theme_from_env()
+  project.sh:

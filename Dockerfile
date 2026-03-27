@@ -75,7 +75,7 @@ RUN echo '#!/usr/bin/env python3' > test_sdlc.py && \
     echo 'print("=== typermd SDLC Test ===")' >> test_sdlc.py && \
     echo 'print(f"Version: {typermd.__version__}")' >> test_sdlc.py && \
     echo 'md("# Test Markdown Output")' >> test_sdlc.py && \
-    echo 'table([["Test", "Status"]], [["typermd", "✅ PASS"]], headers=["Component", "Result"])' >> test_sdlc.py && \
+    echo 'table(["Component", "Result"], [["typermd", "✅ PASS"]])' >> test_sdlc.py && \
     echo 'panel("All tests completed successfully!", title="SDLC Test")' >> test_sdlc.py && \
     chmod +x test_sdlc.py
 

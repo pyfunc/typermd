@@ -13,7 +13,6 @@ Usage:
     install_help_formatter(app)
 """
 
-from __future__ import annotations
 
 import re
 import sys
