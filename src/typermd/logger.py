@@ -17,7 +17,7 @@ Usage:
 import sys
 from typing import TextIO
 
-from typermd.renderer import (
+from typermd.ansi import (
     BOLD,
     DIM,
     FG_BLUE,
@@ -27,7 +27,7 @@ from typermd.renderer import (
     FG_RED,
     FG_YELLOW,
     RESET,
-    _supports_color,
+    supports_color,
 )
 
 
@@ -47,7 +47,7 @@ class Logger:
         self.name = name
         self.verbose = verbose
         self.stream = stream or sys.stderr
-        self.use_colors = use_colors and _supports_color(self.stream)
+        self.use_colors = use_colors and supports_color(self.stream)
 
     def _c(self, text: str, *codes: str) -> str:
         if not self.use_colors or not codes:

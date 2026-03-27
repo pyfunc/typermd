@@ -29,4 +29,4 @@ def deploy(
 
 
 if __name__ == "__main__":
-    typer.Typer()
+    deploy()

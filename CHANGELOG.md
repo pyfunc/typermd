@@ -8,6 +8,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.10] - 2026-03-27
 
 ### Fixed
+- Fix magic-numbers issues (ticket-50c6d50a)
+- Fix relative-imports issues (ticket-3450003e)
+- Fix relative-imports issues (ticket-8871b38a)
+- Fix llm-generated-code issues (ticket-235b03a9)
+
+## [0.1.10] - 2026-03-27
+
+### Fixed
+- Fix relative-imports issues (ticket-53a8b762)
+- Fix relative-imports issues (ticket-d9ee608d)
+
+## [0.1.10] - 2026-03-27
+
+### Fixed
 - Fix smart-return-type issues (ticket-1aaadf0b)
 - Fix ai-boilerplate issues (ticket-8b31945f)
 - Fix smart-return-type issues (ticket-f818abb0)
@@ -30,6 +44,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix unused-imports issues (ticket-36459da8)
 
 ## [Unreleased]
+
+## [0.1.4] - 2026-03-27
+
+### Docs
+- Update CHANGELOG.md
+- Update TODO.md
+- Update docs/README.md
+- Update project/README.md
+- Update project/context.md
+
+### Other
+- Update examples/basic.py
+- Update examples/logger_usage.py
+- Update examples/table_styles_demo.py
+- Update examples/tables_panels.py
+- Update planfile.yaml
+- Update project/analysis.toon.yaml
+- Update project/calls.mmd
+- Update project/calls.png
+- Update project/compact_flow.mmd
+- Update project/compact_flow.png
+- ... and 9 more files
 
 ## [0.1.3] - 2026-03-27
 

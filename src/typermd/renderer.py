@@ -4,69 +4,36 @@ Provides MarkdownRenderer class and convenience functions for rendering
 markdown text with ANSI color codes in the terminal.
 """
 
-
-import os
 import re
 import shutil
 import sys
-from dataclasses import dataclass
 from io import StringIO
-from typing import IO, TextIO
+from typing import TextIO
 
-# ── Constants ───────────────────────────────────────────────────────────
-
-MAX_LINES_TO_CHECK = 20
-DEFAULT_TERMINAL_WIDTH = 80
-DEFAULT_PANEL_WIDTH = 42
-
-# ── ANSI helpers ──────────────────────────────────────────────────────────
-
-RESET = "\033[0m"
-BOLD = "\033[1m"
-DIM = "\033[2m"
-ITALIC = "\033[3m"
-UNDERLINE = "\033[4m"
-
-FG_RED = "\033[31m"
-FG_GREEN = "\033[32m"
-FG_YELLOW = "\033[33m"
-FG_BLUE = "\033[34m"
-FG_MAGENTA = "\033[35m"
-FG_CYAN = "\033[36m"
-FG_WHITE = "\033[37m"
-FG_GRAY = "\033[90m"
-FG_BRIGHT_RED = "\033[91m"
-FG_BRIGHT_GREEN = "\033[92m"
-FG_BRIGHT_YELLOW = "\033[93m"
-FG_BRIGHT_BLUE = "\033[94m"
-FG_BRIGHT_MAGENTA = "\033[95m"
-FG_BRIGHT_CYAN = "\033[96m"
-
-BG_GRAY = "\033[48;5;236m"
-
-_ANSI_RE = re.compile(r"\033\[[0-9;]*m")
-
-
-def strip_ansi(text: str) -> str:
-    """Remove all ANSI escape codes from text."""
-    return _ANSI_RE.sub("", text)
-
-
-def _is_no_color() -> bool:
-    """Check if NO_COLOR env is set (https://no-color.org)."""
-    return "NO_COLOR" in os.environ
-
-
-def _supports_color(stream: IO | None = None) -> bool:
-    """Detect if the output stream supports color."""
-    if _is_no_color():
-        return False
-    s = stream or sys.stdout
-    if hasattr(s, "isatty") and s.isatty():
-        return True
-    if os.environ.get("FORCE_COLOR"):
-        return True
-    return False
+from .ansi import (
+    BG_GRAY,
+    BOLD,
+    DEFAULT_PANEL_WIDTH,
+    DEFAULT_TERMINAL_WIDTH,
+    DIM,
+    FG_BLUE,
+    FG_BRIGHT_BLUE,
+    FG_BRIGHT_CYAN,
+    FG_BRIGHT_MAGENTA,
+    FG_BRIGHT_YELLOW,
+    FG_CYAN,
+    FG_GRAY,
+    FG_GREEN,
+    FG_MAGENTA,
+    FG_YELLOW,
+    ITALIC,
+    MAX_LINES_TO_CHECK,
+    RESET,
+    UNDERLINE,
+    strip_ansi,
+    supports_color,
+)
+from .highlighting import highlight_code
 
 
 # ── Markdown detection ────────────────────────────────────────────────────
@@ -96,209 +63,6 @@ def looks_like_markdown(text: str) -> bool:
     return score >= 1
 
 
-# ── Syntax Highlighters ──────────────────────────────────────────────────
-
-
-@dataclass
-class _HL:
-    """Highlighter rule: pattern + color."""
-
-    pattern: re.Pattern
-    color: str
-
-
-def _make_highlighters() -> dict[str, list[_HL]]:
-    """Build language-specific highlighter rules."""
-    python_kw = (
-        r"\b(def|class|if|elif|else|for|while|return|import|from|as|try|except|"
-        r"finally|with|yield|raise|pass|break|continue|and|or|not|in|is|None|"
-        r"True|False|self|async|await|lambda|global|nonlocal)\b"
-    )
-    return {
-        "python": [
-            _HL(re.compile(r"#.*$", re.M), FG_GRAY),
-            _HL(re.compile(r'"""[\s\S]*?"""|\'\'\'[\s\S]*?\'\'\''), FG_GREEN),
-            _HL(re.compile(r'"[^"\\]*(?:\\.[^"\\]*)*"|\'[^\'\\]*(?:\\.[^\'\\]*)*\''), FG_GREEN),
-            _HL(re.compile(r"@\w+"), FG_YELLOW),
-            _HL(re.compile(python_kw), FG_BLUE),
-            _HL(re.compile(r"\b\d+\.?\d*\b"), FG_CYAN),
-        ],
-        "javascript": [
-            _HL(re.compile(r"//.*$", re.M), FG_GRAY),
-            _HL(re.compile(r"/\*[\s\S]*?\*/"), FG_GRAY),
-            _HL(
-                re.compile(r'"[^"\\]*(?:\\.[^"\\]*)*"|\'[^\'\\]*(?:\\.[^\'\\]*)*\'|`[^`]*`'),
-                FG_GREEN,
-            ),
-            _HL(
-                re.compile(
-                    r"\b(const|let|var|function|return|if|else|for|while|class|import|"
-                    r"export|from|async|await|try|catch|throw|new|this|typeof|null|"
-                    r"undefined|true|false)\b"
-                ),
-                FG_BLUE,
-            ),
-            _HL(re.compile(r"\b\d+\.?\d*\b"), FG_CYAN),
-        ],
-        "typescript": [],  # filled below
-        "bash": [
-            _HL(re.compile(r"#.*$", re.M), FG_GRAY),
-            _HL(re.compile(r'"[^"\\]*(?:\\.[^"\\]*)*"|\'[^\']*\''), FG_GREEN),
-            _HL(
-                re.compile(
-                    r"\b(if|then|else|elif|fi|for|do|done|while|case|esac|function|"
-                    r"return|local|export|source|echo|exit|cd|ls|grep|awk|sed|cat|"
-                    r"mkdir|rm|cp|mv|chmod|sudo|apt|pip|npm|git|docker)\b"
-                ),
-                FG_BLUE,
-            ),
-            _HL(re.compile(r"\$\{?\w+\}?"), FG_CYAN),
-        ],
-        "json": [
-            _HL(re.compile(r'"[^"]*"\s*(?=:)'), FG_CYAN),
-            _HL(re.compile(r'"[^"]*"'), FG_GREEN),
-            _HL(re.compile(r"\b(true|false|null)\b"), FG_BLUE),
-            _HL(re.compile(r"-?\b\d+\.?\d*\b"), FG_MAGENTA),
-        ],
-        "yaml": [
-            _HL(re.compile(r"#.*$", re.M), FG_GRAY),
-            _HL(re.compile(r"^[\w._-]+(?=\s*:)", re.M), FG_CYAN),
-            _HL(re.compile(r'"[^"]*"|\'[^\']*\''), FG_GREEN),
-            _HL(re.compile(r"\b(true|false|null|yes|no)\b", re.I), FG_BLUE),
-        ],
-        "toml": [
-            _HL(re.compile(r"#.*$", re.M), FG_GRAY),
-            _HL(re.compile(r"^\[.*\]", re.M), f"{FG_CYAN}{BOLD}"),
-            _HL(re.compile(r"^[\w._-]+(?=\s*=)", re.M), FG_CYAN),
-            _HL(re.compile(r'"[^"]*"|\'[^\']*\''), FG_GREEN),
-            _HL(re.compile(r"\b(true|false)\b"), FG_BLUE),
-        ],
-        "sql": [
-            _HL(re.compile(r"--.*$", re.M), FG_GRAY),
-            _HL(
-                re.compile(
-                    r"\b(SELECT|FROM|WHERE|INSERT|UPDATE|DELETE|CREATE|DROP|ALTER|"
-                    r"TABLE|INDEX|JOIN|LEFT|RIGHT|INNER|OUTER|ON|AND|OR|NOT|IN|"
-                    r"ORDER|BY|GROUP|HAVING|LIMIT|AS|SET|VALUES|INTO|NULL|"
-                    r"PRIMARY|KEY|FOREIGN|REFERENCES|DISTINCT|COUNT|SUM|AVG)\b",
-                    re.I,
-                ),
-                FG_BLUE,
-            ),
-            _HL(re.compile(r"'[^']*'"), FG_GREEN),
-        ],
-        "rust": [
-            _HL(re.compile(r"//.*$", re.M), FG_GRAY),
-            _HL(re.compile(r'"[^"\\]*(?:\\.[^"\\]*)*"'), FG_GREEN),
-            _HL(
-                re.compile(
-                    r"\b(fn|let|mut|const|struct|enum|impl|trait|pub|use|mod|crate|"
-                    r"self|super|if|else|match|for|while|loop|return|break|continue|"
-                    r"async|await|move|ref|where|type|dyn|unsafe|extern)\b"
-                ),
-                FG_BLUE,
-            ),
-            _HL(
-                re.compile(
-                    r"\b(i8|i16|i32|i64|u8|u16|u32|u64|f32|f64|bool|str|String|Vec|Option|Result|Self)\b"
-                ),
-                FG_CYAN,
-            ),
-            _HL(re.compile(r"#\[.*?\]"), FG_YELLOW),
-        ],
-        "go": [
-            _HL(re.compile(r"//.*$", re.M), FG_GRAY),
-            _HL(re.compile(r'"[^"\\]*(?:\\.[^"\\]*)*"|`[^`]*`'), FG_GREEN),
-            _HL(
-                re.compile(
-                    r"\b(func|var|const|type|struct|interface|map|chan|go|select|"
-                    r"if|else|for|range|switch|case|default|return|break|continue|"
-                    r"defer|package|import|nil|true|false)\b"
-                ),
-                FG_BLUE,
-            ),
-        ],
-        "dockerfile": [
-            _HL(re.compile(r"#.*$", re.M), FG_GRAY),
-            _HL(
-                re.compile(
-                    r"^(FROM|RUN|CMD|COPY|ADD|EXPOSE|ENV|ARG|WORKDIR|ENTRYPOINT|"
-                    r"VOLUME|USER|LABEL|HEALTHCHECK|SHELL)\b",
-                    re.M,
-                ),
-                f"{FG_BLUE}{BOLD}",
-            ),
-            _HL(re.compile(r'"[^"]*"'), FG_GREEN),
-        ],
-        "log": [
-            _HL(re.compile(r".*\b(error|fail|critical|fatal)\b.*", re.I), FG_RED),
-            _HL(re.compile(r".*\b(warn|warning|⚠️)\b.*", re.I), FG_YELLOW),
-            _HL(re.compile(r".*\b(success|ok|✅|done|complete)\b.*", re.I), FG_GREEN),
-            _HL(re.compile(r".*\b(info|ℹ️|🚀|📦)\b.*", re.I), FG_BLUE),
-        ],
-    }
-
-
-_HIGHLIGHTERS = _make_highlighters()
-_HIGHLIGHTERS["typescript"] = _HIGHLIGHTERS["javascript"]
-_HIGHLIGHTERS["js"] = _HIGHLIGHTERS["javascript"]
-_HIGHLIGHTERS["ts"] = _HIGHLIGHTERS["typescript"]
-_HIGHLIGHTERS["sh"] = _HIGHLIGHTERS["bash"]
-_HIGHLIGHTERS["shell"] = _HIGHLIGHTERS["bash"]
-_HIGHLIGHTERS["zsh"] = _HIGHLIGHTERS["bash"]
-_HIGHLIGHTERS["py"] = _HIGHLIGHTERS["python"]
-_HIGHLIGHTERS["yml"] = _HIGHLIGHTERS["yaml"]
-_HIGHLIGHTERS["rs"] = _HIGHLIGHTERS["rust"]
-
-
-def _highlight_code(code: str, lang: str) -> str:
-    """Apply syntax highlighting to a code block."""
-    rules = _HIGHLIGHTERS.get(lang.lower(), [])
-    if not rules:
-        return code
-
-    # For log-style highlighting, apply line-by-line matching
-    if lang.lower() == "log":
-        lines = code.split("\n")
-        result = []
-        for line in lines:
-            colored = line
-            for rule in rules:
-                if rule.pattern.search(line):
-                    colored = f"{rule.color}{line}{RESET}"
-                    break
-            result.append(colored)
-        return "\n".join(result)
-
-    # For other languages, apply pattern-based highlighting
-    # We track positions to avoid overlapping highlights
-    highlights: list[tuple[int, int, str]] = []  # (start, end, color)
-    for rule in rules:
-        for m in rule.pattern.finditer(code):
-            start, end = m.start(), m.end()
-            # Skip if overlapping with existing highlight
-            overlaps = any(not (end <= hs or start >= he) for hs, he, _ in highlights)
-            if not overlaps:
-                highlights.append((start, end, rule.color))
-
-    if not highlights:
-        return code
-
-    # Sort by position and build result
-    highlights.sort(key=lambda x: x[0])
-    parts = []
-    pos = 0
-    for start, end, color in highlights:
-        if start > pos:
-            parts.append(code[pos:start])
-        parts.append(f"{color}{code[start:end]}{RESET}")
-        pos = end
-    if pos < len(code):
-        parts.append(code[pos:])
-
-    return "".join(parts)
-
-
 # ── MarkdownRenderer ─────────────────────────────────────────────────────
 
 
@@ -312,7 +76,7 @@ class MarkdownRenderer:
         width: int | None = None,
     ):
         self.stream = stream or sys.stdout
-        self.use_colors = use_colors and _supports_color(self.stream)
+        self.use_colors = use_colors and supports_color(self.stream)
         self._width = width
 
     @property
@@ -356,7 +120,7 @@ class MarkdownRenderer:
         border = self._c(f"┌{'─' * 2}{label}{'─' * max(0, 40 - len(label))}┐", DIM)
         self._wln(border)
         if self.use_colors:
-            highlighted = _highlight_code(code, lang)
+            highlighted = highlight_code(code, lang)
         else:
             highlighted = code
         for line in highlighted.split("\n"):
@@ -555,5 +319,5 @@ def md(text: str) -> None:
 def render_to_string(text: str) -> str:
     """Render markdown and return as string."""
     buf = StringIO()
-    render_markdown(text, stream=buf, use_colors=_supports_color())
+    render_markdown(text, stream=buf, use_colors=supports_color())
     return buf.getvalue()

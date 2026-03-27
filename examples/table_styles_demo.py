@@ -24,4 +24,4 @@ def demo() -> None:
         typer.table(headers, rows, style=style)
 
 if __name__ == "__main__":
-    typer.Typer()
+    app()

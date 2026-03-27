@@ -4,24 +4,28 @@
 
 - **Project**: /home/tom/github/pyfunc/typermd
 - **Primary Language**: python
-- **Languages**: python: 9, shell: 1
+- **Languages**: python: 12, shell: 1
 - **Analysis Mode**: static
-- **Total Functions**: 61
+- **Total Functions**: 66
 - **Total Classes**: 5
-- **Modules**: 10
+- **Modules**: 13
 - **Entry Points**: 50
 
 ## Architecture by Module
 
 ### src.typermd.renderer
-- **Functions**: 24
-- **Classes**: 2
+- **Functions**: 19
+- **Classes**: 1
 - **File**: `renderer.py`
 
 ### src.typermd.logger
 - **Functions**: 12
 - **Classes**: 1
 - **File**: `logger.py`
+
+### src.typermd.tables
+- **Functions**: 7
+- **File**: `tables.py`
 
 ### src.typermd.themes
 - **Functions**: 7
@@ -33,33 +37,42 @@
 - **Classes**: 1
 - **File**: `help.py`
 
-### src.typermd
-- **Functions**: 5
-- **File**: `__init__.py`
+### src.typermd.ansi
+- **Functions**: 3
+- **File**: `ansi.py`
 
 ### examples.basic
 - **Functions**: 3
 - **File**: `basic.py`
 
+### src.typermd
+- **Functions**: 3
+- **File**: `__init__.py`
+
 ### examples.tables_panels
 - **Functions**: 2
 - **File**: `tables_panels.py`
 
-### examples.table_styles_demo
-- **Functions**: 1
-- **File**: `table_styles_demo.py`
+### src.typermd.highlighting
+- **Functions**: 2
+- **Classes**: 1
+- **File**: `highlighting.py`
 
 ### examples.logger_usage
 - **Functions**: 1
 - **File**: `logger_usage.py`
 
+### examples.table_styles_demo
+- **Functions**: 1
+- **File**: `table_styles_demo.py`
+
 ## Key Entry Points
 
 Main execution flows into the system:
 
-### src.typermd.renderer._make_highlighters
+### src.typermd.highlighting._make_highlighters
 > Build language-specific highlighter rules.
-- **Calls**: _HL, _HL, _HL, _HL, _HL, _HL, _HL, _HL
+- **Calls**: HighlightRule, HighlightRule, HighlightRule, HighlightRule, HighlightRule, HighlightRule, HighlightRule, HighlightRule
 
 ### src.typermd.renderer.MarkdownRenderer.render
 > Render a complete markdown document.
@@ -77,7 +90,7 @@ Main execution flows into the system:
 - **Calls**: self._wln, self._wln, min, self._c, min, self._wln, self._c, len
 
 ### src.typermd.renderer.MarkdownRenderer.codeblock
-- **Calls**: self._c, self._wln, highlighted.split, self._wln, src.typermd.renderer._highlight_code, self._wln, self._c, self._c
+- **Calls**: self._c, self._wln, highlighted.split, self._wln, src.typermd.highlighting.highlight_code, self._wln, self._c, self._c
 
 ### src.typermd.echo
 > Enhanced echo that auto-detects and renders markdown.
@@ -112,18 +125,11 @@ Args:
 
 ### src.typermd.renderer.render_to_string
 > Render markdown and return as string.
-- **Calls**: StringIO, src.typermd.renderer.render_markdown, buf.getvalue, src.typermd.renderer._supports_color
-
-### examples.table_styles_demo.demo
-> Demonstrate all table styles.
-- **Calls**: app.command, typer.md, typer.table
+- **Calls**: StringIO, src.typermd.renderer.render_markdown, buf.getvalue, src.typermd.ansi.supports_color
 
 ### examples.tables_panels.deps
 > Show project dependencies as a table.
-- **Calls**: app.command, typer.md, src.typermd.table
-
-### src.typermd.logger.Logger._emit
-- **Calls**: self._c, self._c, self.stream.write
+- **Calls**: app.command, typer.md, src.typermd.tables.table
 
 ### src.typermd.renderer.MarkdownRenderer.horizontal_rule
 - **Calls**: self._wln, self._c, min
@@ -134,8 +140,15 @@ Args:
 ### src.typermd.renderer.MarkdownRenderer.numbered_item
 - **Calls**: self._c, self._wln, self._inline
 
+### examples.table_styles_demo.demo
+> Demonstrate all table styles.
+- **Calls**: app.command, typer.md, typer.table
+
+### src.typermd.logger.Logger._emit
+- **Calls**: self._c, self._c, self.stream.write
+
 ### src.typermd.help.MarkdownHelpFormatter.__init__
-- **Calls**: None.__init__, src.typermd.renderer._supports_color, super
+- **Calls**: None.__init__, _supports_color, super
 
 ### src.typermd.help.MarkdownHelpFormatter.write
 > Override write to apply markdown formatting.
@@ -144,6 +157,10 @@ Args:
 ### src.typermd.help.MarkdownHelpFormatter.write_heading
 > Write a heading with color.
 - **Calls**: self.write, None.write_heading, super
+
+### examples.tables_panels.info
+> Show app info in a panel.
+- **Calls**: app.command, src.typermd.panel
 
 ### examples.basic.status
 > Show system status with styled output.
@@ -157,17 +174,8 @@ Args:
 > Render a blockquote.
 - **Calls**: None.blockquote, src.typermd.renderer.get_renderer
 
-### src.typermd.themes.list_themes
-> Return list of available theme names.
-- **Calls**: list, _THEMES.keys
-
-### src.typermd.themes.init_theme_from_env
-> Initialize theme from TYPERMD_THEME env variable.
-- **Calls**: os.environ.get, src.typermd.themes.set_theme
-
-### examples.tables_panels.info
-> Show app info in a panel.
-- **Calls**: app.command, src.typermd.panel
+### src.typermd.renderer.MarkdownRenderer.paragraph
+- **Calls**: self._wln, self._inline
 
 ### src.typermd.logger.Logger.action
 > Log an action step.
@@ -177,13 +185,17 @@ Args:
 > Log a numbered step.
 - **Calls**: self._c, self.stream.write
 
+### src.typermd.themes.list_themes
+> Return list of available theme names.
+- **Calls**: list, _THEMES.keys
+
 ## Process Flows
 
 Key execution flows identified:
 
 ### Flow 1: _make_highlighters
 ```
-_make_highlighters [src.typermd.renderer]
+_make_highlighters [src.typermd.highlighting]
 ```
 
 ### Flow 2: render
@@ -209,7 +221,7 @@ heading [src.typermd.renderer.MarkdownRenderer]
 ### Flow 6: codeblock
 ```
 codeblock [src.typermd.renderer.MarkdownRenderer]
-  └─ →> _highlight_code
+  └─ →> highlight_code
 ```
 
 ### Flow 7: echo
@@ -260,7 +272,7 @@ All output is emitted as styled text to the specified stream.
 - **Methods**: 1
 - **Key Methods**: src.typermd.themes.Theme.get_color
 
-### src.typermd.renderer._HL
+### src.typermd.highlighting.HighlightRule
 > Highlighter rule: pattern + color.
 - **Methods**: 0
 
@@ -278,46 +290,46 @@ This patches the underlying Click group's forma
 
 Functions exposed as public API (no underscore prefix):
 
-- `src.typermd.table` - 50 calls
 - `src.typermd.renderer.MarkdownRenderer.render` - 45 calls
 - `src.typermd.panel` - 19 calls
+- `src.typermd.highlighting.highlight_code` - 18 calls
 - `examples.logger_usage.deploy` - 12 calls
 - `src.typermd.renderer.MarkdownRenderer.heading` - 12 calls
 - `src.typermd.renderer.MarkdownRenderer.codeblock` - 10 calls
+- `src.typermd.tables.table` - 9 calls
 - `src.typermd.echo` - 7 calls
 - `src.typermd.help.install_help_formatter` - 7 calls
 - `examples.basic.hello` - 5 calls
+- `src.typermd.ansi.supports_color` - 4 calls
 - `src.typermd.renderer.MarkdownRenderer.blockquote` - 4 calls
 - `src.typermd.renderer.MarkdownRenderer.checklist_item` - 4 calls
 - `src.typermd.renderer.render_to_string` - 4 calls
-- `examples.table_styles_demo.demo` - 3 calls
-- `src.typermd.themes.set_theme` - 3 calls
 - `examples.tables_panels.deps` - 3 calls
 - `src.typermd.renderer.looks_like_markdown` - 3 calls
 - `src.typermd.renderer.MarkdownRenderer.horizontal_rule` - 3 calls
 - `src.typermd.renderer.MarkdownRenderer.list_item` - 3 calls
 - `src.typermd.renderer.MarkdownRenderer.numbered_item` - 3 calls
+- `examples.table_styles_demo.demo` - 3 calls
+- `src.typermd.themes.set_theme` - 3 calls
 - `src.typermd.help.MarkdownHelpFormatter.write` - 3 calls
 - `src.typermd.help.MarkdownHelpFormatter.write_heading` - 3 calls
+- `examples.tables_panels.info` - 2 calls
 - `examples.basic.status` - 2 calls
 - `examples.basic.demo` - 2 calls
 - `src.typermd.blockquote` - 2 calls
-- `src.typermd.themes.list_themes` - 2 calls
-- `src.typermd.themes.init_theme_from_env` - 2 calls
-- `examples.tables_panels.info` - 2 calls
-- `src.typermd.logger.Logger.action` - 2 calls
-- `src.typermd.logger.Logger.step` - 2 calls
 - `src.typermd.renderer.MarkdownRenderer.paragraph` - 2 calls
 - `src.typermd.renderer.render_markdown` - 2 calls
+- `src.typermd.logger.Logger.action` - 2 calls
+- `src.typermd.logger.Logger.step` - 2 calls
+- `src.typermd.themes.list_themes` - 2 calls
+- `src.typermd.themes.init_theme_from_env` - 2 calls
 - `src.typermd.help.MarkdownHelpFormatter.write_usage` - 2 calls
-- `src.typermd.themes.Theme.get_color` - 1 calls
-- `src.typermd.themes.get_theme` - 1 calls
+- `src.typermd.ansi.strip_ansi` - 1 calls
+- `src.typermd.renderer.get_renderer` - 1 calls
+- `src.typermd.renderer.md` - 1 calls
 - `src.typermd.logger.Logger.debug` - 1 calls
 - `src.typermd.logger.Logger.info` - 1 calls
 - `src.typermd.logger.Logger.success` - 1 calls
-- `src.typermd.logger.Logger.warning` - 1 calls
-- `src.typermd.logger.Logger.error` - 1 calls
-- `src.typermd.logger.get_logger` - 1 calls
 
 ## System Interactions
 
@@ -325,7 +337,7 @@ How components interact:
 
 ```mermaid
 graph TD
-    _make_highlighters --> _HL
+    _make_highlighters --> HighlightRule
     render --> split
     render --> len
     render --> startswith
@@ -342,7 +354,7 @@ graph TD
     codeblock --> _c
     codeblock --> _wln
     codeblock --> split
-    codeblock --> _highlight_code
+    codeblock --> highlight_code
     echo --> str
     echo --> looks_like_markdown
     echo --> render_markdown

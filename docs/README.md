@@ -1,7 +1,7 @@
 <!-- code2docs:start --># typermd
 
-![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.10-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-61-green)
-> **61** functions | **5** classes | **10** files | CC̄ = 2.8
+![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.10-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-66-green)
+> **66** functions | **5** classes | **13** files | CC̄ = 2.7
 
 > Auto-generated project documentation from source code analysis.
 
@@ -146,30 +146,39 @@ Content outside the markers is preserved when regenerating. Enable this with `sy
 
 ```
 typermd/
-    ├── tables_panels    ├── table_styles_demo    ├── typermd/    ├── basic    ├── logger_usage        ├── logger├── project        ├── themes        ├── renderer        ├── help```
+    ├── logger_usage    ├── basic        ├── ansi    ├── typermd/    ├── table_styles_demo        ├── tables        ├── renderer    ├── tables_panels        ├── logger├── project        ├── themes        ├── highlighting        ├── help```
 
 ## API Overview
 
 ### Classes
 
+- **`MarkdownRenderer`** — Renders markdown text to the terminal with ANSI colors.
 - **`Logger`** — Markdown-aware structured logger.
 - **`Theme`** — Color theme definition with named color slots.
-- **`MarkdownRenderer`** — Renders markdown text to the terminal with ANSI colors.
+- **`HighlightRule`** — Highlighter rule: pattern + color.
 - **`MarkdownHelpFormatter`** — Click HelpFormatter that renders markdown in help text.
 
 ### Functions
 
-- `deps()` — Show project dependencies as a table.
-- `info()` — Show app info in a panel.
-- `demo()` — Demonstrate all table styles.
-- `echo(message, file, nl, err)` — Enhanced echo that auto-detects and renders markdown.
-- `table(headers, rows, style)` — Render a table to the terminal.
-- `panel(content, title, style_color)` — Render a bordered panel.
-- `blockquote(content)` — Render a blockquote.
+- `deploy(env, dry_run)` — Simulate a deployment with structured logging.
 - `hello(name, formal)` — Say hello with markdown formatting.
 - `status()` — Show system status with styled output.
 - `demo()` — Demonstrate all markdown features.
-- `deploy(env, dry_run)` — Simulate a deployment with structured logging.
+- `strip_ansi(text)` — Remove all ANSI escape codes from text.
+- `is_no_color()` — Check if NO_COLOR env is set (https://no-color.org).
+- `supports_color(stream)` — Detect if the output stream supports color.
+- `echo(message, file, nl, err)` — Enhanced echo that auto-detects and renders markdown.
+- `panel(content, title, style_color)` — Render a bordered panel.
+- `blockquote(content)` — Render a blockquote.
+- `demo()` — Demonstrate all table styles.
+- `table(headers, rows, style)` — Render a table to the terminal.
+- `looks_like_markdown(text)` — Heuristic: does the text contain markdown formatting?
+- `get_renderer(stream, use_colors)` — Get or create the default MarkdownRenderer.
+- `render_markdown(text, stream, use_colors)` — Render markdown text to a stream.
+- `md(text)` — Render markdown text to stdout. Primary convenience function.
+- `render_to_string(text)` — Render markdown and return as string.
+- `deps()` — Show project dependencies as a table.
+- `info()` — Show app info in a panel.
 - `get_logger(name, verbose)` — Get or create the default logger.
 - `set_logger(logger)` — Replace the default logger.
 - `get_theme()` — Get the current active theme.
@@ -178,12 +187,7 @@ typermd/
 - `list_themes()` — Return list of available theme names.
 - `is_no_color()` — Check if NO_COLOR env is set.
 - `init_theme_from_env()` — Initialize theme from TYPERMD_THEME env variable.
-- `strip_ansi(text)` — Remove all ANSI escape codes from text.
-- `looks_like_markdown(text)` — Heuristic: does the text contain markdown formatting?
-- `get_renderer(stream, use_colors)` — Get or create the default MarkdownRenderer.
-- `render_markdown(text, stream, use_colors)` — Render markdown text to a stream.
-- `md(text)` — Render markdown text to stdout. Primary convenience function.
-- `render_to_string(text)` — Render markdown and return as string.
+- `highlight_code(code, lang)` — Apply syntax highlighting to a code block.
 - `install_help_formatter(app)` — Install the markdown help formatter on a Typer app.
 
 
@@ -194,10 +198,13 @@ typermd/
 📄 `examples.table_styles_demo` (1 functions)
 📄 `examples.tables_panels` (2 functions)
 📄 `project`
-📦 `src.typermd` (5 functions)
+📦 `src.typermd` (3 functions)
+📄 `src.typermd.ansi` (3 functions)
 📄 `src.typermd.help` (6 functions, 1 classes)
+📄 `src.typermd.highlighting` (2 functions, 1 classes)
 📄 `src.typermd.logger` (12 functions, 1 classes)
-📄 `src.typermd.renderer` (24 functions, 2 classes)
+📄 `src.typermd.renderer` (19 functions, 1 classes)
+📄 `src.typermd.tables` (7 functions)
 📄 `src.typermd.themes` (7 functions, 1 classes)
 
 ## Requirements
@@ -208,8 +215,8 @@ typermd/
 ## Contributing
 
 **Contributors:**
-- Tom Sapletta <tom-sapletta-com@users.noreply.github.com>
 - Tom Softreck <tom@sapletta.com>
+- Tom Sapletta <tom-sapletta-com@users.noreply.github.com>
 
 We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
 

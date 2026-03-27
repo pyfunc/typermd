@@ -1,31 +1,22 @@
-# code2llm/evolution | 54 func | 5f | 2026-03-27
+# code2llm/evolution | 59 func | 8f | 2026-03-27
 
-NEXT[4] (ranked by impact):
-  [1] !! SPLIT           src/typermd/renderer.py
-      WHY: 559L, 2 classes, max CC=15
-      EFFORT: ~4h  IMPACT: 8385
-
-  [2] !  SPLIT-FUNC      table  CC=24  fan=17
-      WHY: CC=24 exceeds 15
-      EFFORT: ~1h  IMPACT: 408
-
-  [3] !  SPLIT-FUNC      MarkdownRenderer.render  CC=15  fan=23
+NEXT[2] (ranked by impact):
+  [1] !  SPLIT-FUNC      MarkdownRenderer.render  CC=15  fan=23
       WHY: CC=15 exceeds 15
       EFFORT: ~1h  IMPACT: 345
 
-  [4] !  SPLIT-FUNC      _highlight_code  CC=15  fan=14
+  [2] !  SPLIT-FUNC      highlight_code  CC=15  fan=14
       WHY: CC=15 exceeds 15
       EFFORT: ~1h  IMPACT: 210
 
 
-RISKS[1]:
-  ⚠ Splitting src/typermd/renderer.py may break 24 import paths
+RISKS[0]: none
 
 METRICS-TARGET:
-  CC̄:          3.0 → ≤2.1
-  max-CC:      24 → ≤12
-  god-modules: 1 → 0
-  high-CC(≥15): 3 → ≤1
+  CC̄:          2.8 → ≤2.0
+  max-CC:      15 → ≤7
+  god-modules: 0 → 0
+  high-CC(≥15): 2 → ≤1
   hub-types:   0 → ≤0
 
 PATTERNS (language parser shared logic):
@@ -53,4 +44,4 @@ PATTERNS (language parser shared logic):
     - Standardized FunctionInfo/ClassInfo models
 
 HISTORY:
-  prev CC̄=3.0 → now CC̄=3.0
+  prev CC̄=3.0 → now CC̄=2.8

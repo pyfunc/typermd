@@ -93,4 +93,4 @@ Check out [Typer](https://typer.tiangolo.com) for more info.
 
 
 if __name__ == "__main__":
-    typer.Typer()
+    app()

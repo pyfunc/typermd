@@ -277,3 +277,81 @@ sprints:
     model_hints:
       planning: balanced
       implementation: balanced
+  - id: ticket-53a8b762
+    name: Fix relative-imports issues
+    description: Resolve 1 relative-imports issues in src/typermd/__init__.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/typermd/__init__.py
+    rule_id: relative-imports
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-d9ee608d
+    name: Fix relative-imports issues
+    description: Resolve 3 relative-imports issues in src/typermd/tables.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/typermd/tables.py
+    rule_id: relative-imports
+    count: 3
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-50c6d50a
+    name: Fix magic-numbers issues
+    description: Resolve 3 magic-numbers issues in src/typermd/ansi.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/typermd/ansi.py
+    rule_id: magic-numbers
+    count: 3
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-3450003e
+    name: Fix relative-imports issues
+    description: Resolve 2 relative-imports issues in src/typermd/renderer.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/typermd/renderer.py
+    rule_id: relative-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-8871b38a
+    name: Fix relative-imports issues
+    description: Resolve 2 relative-imports issues in src/typermd/highlighting.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/typermd/highlighting.py
+    rule_id: relative-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-235b03a9
+    name: Fix llm-generated-code issues
+    description: Resolve 1 llm-generated-code issues in src/typermd/highlighting.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/typermd/highlighting.py
+    rule_id: llm-generated-code
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
