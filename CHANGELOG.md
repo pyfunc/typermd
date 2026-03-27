@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-03-27
+
+### Docs
+- Update SDLC_TEST_REPORT.md
+
+### Test
+- Update tests/test_init.py
+- Update tests/test_logger_themes.py
+- Update tests/test_renderer.py
+
 ## [0.1.1] - 2026-03-27
 
 ### Docs

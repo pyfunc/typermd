@@ -3,9 +3,6 @@
 from __future__ import annotations
 
 from io import StringIO
-from unittest.mock import patch
-
-import pytest
 
 
 class TestImports:
@@ -13,51 +10,63 @@ class TestImports:
 
     def test_typer_class(self):
         import typermd
+
         assert typermd.Typer is not None
 
     def test_argument(self):
         import typermd
+
         assert typermd.Argument is not None
 
     def test_option(self):
         import typermd
+
         assert typermd.Option is not None
 
     def test_context(self):
         import typermd
+
         assert typermd.Context is not None
 
     def test_exit(self):
         import typermd
+
         assert typermd.Exit is not None
 
     def test_abort(self):
         import typermd
+
         assert typermd.Abort is not None
 
     def test_colors(self):
         import typermd
+
         assert typermd.colors is not None
 
     def test_style(self):
         import typermd
+
         assert callable(typermd.style)
 
     def test_run(self):
         import typermd
+
         assert callable(typermd.run)
 
     def test_md_function(self):
         import typermd
+
         assert callable(typermd.md)
 
     def test_echo_function(self):
         import typermd
+
         assert callable(typermd.echo)
 
     def test_version(self):
         import typermd
-        assert typermd.__version__ == "0.1.0"
+
+        assert typermd.__version__ == "0.1.1"
 
 
 class TestEcho:
@@ -65,18 +74,21 @@ class TestEcho:
 
     def test_plain_text(self):
         import typermd
+
         buf = StringIO()
         typermd.echo("hello world", file=buf)
         assert "hello world" in buf.getvalue()
 
     def test_markdown_heading(self):
         import typermd
+
         buf = StringIO()
         typermd.echo("# Hello", file=buf)
         assert "Hello" in buf.getvalue()
 
     def test_auto_markdown_disabled(self):
         import typermd
+
         buf = StringIO()
         typermd.echo("# Hello", file=buf, auto_markdown=False)
         out = buf.getvalue()
@@ -84,6 +96,7 @@ class TestEcho:
 
     def test_empty_message(self):
         import typermd
+
         buf = StringIO()
         typermd.echo("", file=buf)
         # Should not raise
@@ -94,11 +107,10 @@ class TestTable:
 
     def test_basic_table(self):
         from typermd import table
-        from typermd.renderer import strip_ansi
 
         buf = StringIO()
-        from typermd.renderer import MarkdownRenderer, _default_renderer
         import typermd.renderer as renderer_mod
+        from typermd.renderer import MarkdownRenderer
 
         old = renderer_mod._default_renderer
         renderer_mod._default_renderer = MarkdownRenderer(stream=buf, use_colors=False)
@@ -115,9 +127,9 @@ class TestTable:
             renderer_mod._default_renderer = old
 
     def test_empty_table(self):
+        import typermd.renderer as renderer_mod
         from typermd import table
         from typermd.renderer import MarkdownRenderer
-        import typermd.renderer as renderer_mod
 
         buf = StringIO()
         old = renderer_mod._default_renderer
@@ -134,9 +146,9 @@ class TestPanel:
     """Test the panel rendering function."""
 
     def test_basic_panel(self):
+        import typermd.renderer as renderer_mod
         from typermd import panel
         from typermd.renderer import MarkdownRenderer
-        import typermd.renderer as renderer_mod
 
         buf = StringIO()
         old = renderer_mod._default_renderer
@@ -157,11 +169,13 @@ class TestDropInReplacement:
 
     def test_create_app(self):
         import typermd as typer
+
         app = typer.Typer()
         assert app is not None
 
     def test_command_decorator(self):
         import typermd as typer
+
         app = typer.Typer()
 
         @app.command()
@@ -170,6 +184,7 @@ class TestDropInReplacement:
 
     def test_option_annotation(self):
         import typermd as typer
+
         app = typer.Typer()
 
         @app.command()

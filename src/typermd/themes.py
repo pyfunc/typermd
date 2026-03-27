@@ -12,7 +12,7 @@ Usage:
 from __future__ import annotations
 
 import os
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 
 @dataclass
@@ -20,12 +20,12 @@ class Theme:
     """Color theme definition with named color slots."""
 
     name: str
-    keyword: str = "\033[34m"       # blue
-    string: str = "\033[32m"        # green
-    comment: str = "\033[90m"       # gray
-    number: str = "\033[36m"        # cyan
-    decorator: str = "\033[33m"     # yellow
-    heading: str = "\033[96m"       # bright cyan
+    keyword: str = "\033[34m"  # blue
+    string: str = "\033[32m"  # green
+    comment: str = "\033[90m"  # gray
+    number: str = "\033[36m"  # cyan
+    decorator: str = "\033[33m"  # yellow
+    heading: str = "\033[96m"  # bright cyan
     bold: str = "\033[1m"
     dim: str = "\033[2m"
     error: str = "\033[31m"

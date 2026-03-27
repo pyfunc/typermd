@@ -10,7 +10,6 @@ from typermd.logger import Logger, get_logger, set_logger
 from typermd.themes import (
     Theme,
     get_theme,
-    init_theme_from_env,
     list_themes,
     register_theme,
     set_theme,

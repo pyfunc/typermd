@@ -2,17 +2,13 @@
 
 from __future__ import annotations
 
-import re
 from io import StringIO
-
-import pytest
 
 from typermd.renderer import (
     MarkdownRenderer,
     _highlight_code,
     get_renderer,
     looks_like_markdown,
-    md,
     render_markdown,
     render_to_string,
     strip_ansi,

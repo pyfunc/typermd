@@ -22,8 +22,6 @@ from typermd.renderer import (
     BOLD,
     DIM,
     FG_BLUE,
-    FG_BRIGHT_GREEN,
-    FG_BRIGHT_RED,
     FG_CYAN,
     FG_GRAY,
     FG_GREEN,

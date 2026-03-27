@@ -10,10 +10,9 @@ import os
 import re
 import shutil
 import sys
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from io import StringIO
 from typing import IO, TextIO
-
 
 # ── ANSI helpers ──────────────────────────────────────────────────────────
 
@@ -68,16 +67,16 @@ def _supports_color(stream: IO | None = None) -> bool:
 # ── Markdown detection ────────────────────────────────────────────────────
 
 _MD_PATTERNS = [
-    re.compile(r"^#{1,6}\s"),          # headings
-    re.compile(r"\*\*[^*]+\*\*"),      # bold
-    re.compile(r"\*[^*]+\*"),          # italic
-    re.compile(r"`[^`]+`"),            # inline code
-    re.compile(r"^```"),               # code fences
-    re.compile(r"^\s*[-*]\s"),         # list items
-    re.compile(r"^\s*\d+\.\s"),        # numbered lists
-    re.compile(r"\[.+\]\(.+\)"),       # links
-    re.compile(r"^>\s"),               # blockquotes
-    re.compile(r"^---\s*$"),           # horizontal rules
+    re.compile(r"^#{1,6}\s"),  # headings
+    re.compile(r"\*\*[^*]+\*\*"),  # bold
+    re.compile(r"\*[^*]+\*"),  # italic
+    re.compile(r"`[^`]+`"),  # inline code
+    re.compile(r"^```"),  # code fences
+    re.compile(r"^\s*[-*]\s"),  # list items
+    re.compile(r"^\s*\d+\.\s"),  # numbered lists
+    re.compile(r"\[.+\]\(.+\)"),  # links
+    re.compile(r"^>\s"),  # blockquotes
+    re.compile(r"^---\s*$"),  # horizontal rules
 ]
 
 
@@ -94,9 +93,11 @@ def looks_like_markdown(text: str) -> bool:
 
 # ── Syntax Highlighters ──────────────────────────────────────────────────
 
+
 @dataclass
 class _HL:
     """Highlighter rule: pattern + color."""
+
     pattern: re.Pattern
     color: str
 
@@ -120,23 +121,32 @@ def _make_highlighters() -> dict[str, list[_HL]]:
         "javascript": [
             _HL(re.compile(r"//.*$", re.M), FG_GRAY),
             _HL(re.compile(r"/\*[\s\S]*?\*/"), FG_GRAY),
-            _HL(re.compile(r'"[^"\\]*(?:\\.[^"\\]*)*"|\'[^\'\\]*(?:\\.[^\'\\]*)*\'|`[^`]*`'), FG_GREEN),
-            _HL(re.compile(
-                r"\b(const|let|var|function|return|if|else|for|while|class|import|"
-                r"export|from|async|await|try|catch|throw|new|this|typeof|null|"
-                r"undefined|true|false)\b"
-            ), FG_BLUE),
+            _HL(
+                re.compile(r'"[^"\\]*(?:\\.[^"\\]*)*"|\'[^\'\\]*(?:\\.[^\'\\]*)*\'|`[^`]*`'),
+                FG_GREEN,
+            ),
+            _HL(
+                re.compile(
+                    r"\b(const|let|var|function|return|if|else|for|while|class|import|"
+                    r"export|from|async|await|try|catch|throw|new|this|typeof|null|"
+                    r"undefined|true|false)\b"
+                ),
+                FG_BLUE,
+            ),
             _HL(re.compile(r"\b\d+\.?\d*\b"), FG_CYAN),
         ],
         "typescript": [],  # filled below
         "bash": [
             _HL(re.compile(r"#.*$", re.M), FG_GRAY),
             _HL(re.compile(r'"[^"\\]*(?:\\.[^"\\]*)*"|\'[^\']*\''), FG_GREEN),
-            _HL(re.compile(
-                r"\b(if|then|else|elif|fi|for|do|done|while|case|esac|function|"
-                r"return|local|export|source|echo|exit|cd|ls|grep|awk|sed|cat|"
-                r"mkdir|rm|cp|mv|chmod|sudo|apt|pip|npm|git|docker)\b"
-            ), FG_BLUE),
+            _HL(
+                re.compile(
+                    r"\b(if|then|else|elif|fi|for|do|done|while|case|esac|function|"
+                    r"return|local|export|source|echo|exit|cd|ls|grep|awk|sed|cat|"
+                    r"mkdir|rm|cp|mv|chmod|sudo|apt|pip|npm|git|docker)\b"
+                ),
+                FG_BLUE,
+            ),
             _HL(re.compile(r"\$\{?\w+\}?"), FG_CYAN),
         ],
         "json": [
@@ -154,44 +164,65 @@ def _make_highlighters() -> dict[str, list[_HL]]:
         "toml": [
             _HL(re.compile(r"#.*$", re.M), FG_GRAY),
             _HL(re.compile(r"^\[.*\]", re.M), FG_CYAN + BOLD),
-            _HL(re.compile(r'^[\w._-]+(?=\s*=)', re.M), FG_CYAN),
+            _HL(re.compile(r"^[\w._-]+(?=\s*=)", re.M), FG_CYAN),
             _HL(re.compile(r'"[^"]*"|\'[^\']*\''), FG_GREEN),
             _HL(re.compile(r"\b(true|false)\b"), FG_BLUE),
         ],
         "sql": [
             _HL(re.compile(r"--.*$", re.M), FG_GRAY),
-            _HL(re.compile(
-                r"\b(SELECT|FROM|WHERE|INSERT|UPDATE|DELETE|CREATE|DROP|ALTER|"
-                r"TABLE|INDEX|JOIN|LEFT|RIGHT|INNER|OUTER|ON|AND|OR|NOT|IN|"
-                r"ORDER|BY|GROUP|HAVING|LIMIT|AS|SET|VALUES|INTO|NULL|"
-                r"PRIMARY|KEY|FOREIGN|REFERENCES|DISTINCT|COUNT|SUM|AVG)\b",
-                re.I,
-            ), FG_BLUE),
+            _HL(
+                re.compile(
+                    r"\b(SELECT|FROM|WHERE|INSERT|UPDATE|DELETE|CREATE|DROP|ALTER|"
+                    r"TABLE|INDEX|JOIN|LEFT|RIGHT|INNER|OUTER|ON|AND|OR|NOT|IN|"
+                    r"ORDER|BY|GROUP|HAVING|LIMIT|AS|SET|VALUES|INTO|NULL|"
+                    r"PRIMARY|KEY|FOREIGN|REFERENCES|DISTINCT|COUNT|SUM|AVG)\b",
+                    re.I,
+                ),
+                FG_BLUE,
+            ),
             _HL(re.compile(r"'[^']*'"), FG_GREEN),
         ],
         "rust": [
             _HL(re.compile(r"//.*$", re.M), FG_GRAY),
             _HL(re.compile(r'"[^"\\]*(?:\\.[^"\\]*)*"'), FG_GREEN),
-            _HL(re.compile(
-                r"\b(fn|let|mut|const|struct|enum|impl|trait|pub|use|mod|crate|"
-                r"self|super|if|else|match|for|while|loop|return|break|continue|"
-                r"async|await|move|ref|where|type|dyn|unsafe|extern)\b"
-            ), FG_BLUE),
-            _HL(re.compile(r"\b(i8|i16|i32|i64|u8|u16|u32|u64|f32|f64|bool|str|String|Vec|Option|Result|Self)\b"), FG_CYAN),
+            _HL(
+                re.compile(
+                    r"\b(fn|let|mut|const|struct|enum|impl|trait|pub|use|mod|crate|"
+                    r"self|super|if|else|match|for|while|loop|return|break|continue|"
+                    r"async|await|move|ref|where|type|dyn|unsafe|extern)\b"
+                ),
+                FG_BLUE,
+            ),
+            _HL(
+                re.compile(
+                    r"\b(i8|i16|i32|i64|u8|u16|u32|u64|f32|f64|bool|str|String|Vec|Option|Result|Self)\b"
+                ),
+                FG_CYAN,
+            ),
             _HL(re.compile(r"#\[.*?\]"), FG_YELLOW),
         ],
         "go": [
             _HL(re.compile(r"//.*$", re.M), FG_GRAY),
             _HL(re.compile(r'"[^"\\]*(?:\\.[^"\\]*)*"|`[^`]*`'), FG_GREEN),
-            _HL(re.compile(
-                r"\b(func|var|const|type|struct|interface|map|chan|go|select|"
-                r"if|else|for|range|switch|case|default|return|break|continue|"
-                r"defer|package|import|nil|true|false)\b"
-            ), FG_BLUE),
+            _HL(
+                re.compile(
+                    r"\b(func|var|const|type|struct|interface|map|chan|go|select|"
+                    r"if|else|for|range|switch|case|default|return|break|continue|"
+                    r"defer|package|import|nil|true|false)\b"
+                ),
+                FG_BLUE,
+            ),
         ],
         "dockerfile": [
             _HL(re.compile(r"#.*$", re.M), FG_GRAY),
-            _HL(re.compile(r"^(FROM|RUN|CMD|COPY|ADD|EXPOSE|ENV|ARG|WORKDIR|ENTRYPOINT|VOLUME|USER|LABEL|HEALTHCHECK|SHELL)\b", re.M), FG_BLUE + BOLD),
+            _HL(
+                re.compile(
+                    r"^(FROM|RUN|CMD|COPY|ADD|EXPOSE|ENV|ARG|WORKDIR|ENTRYPOINT|"
+                    r"VOLUME|USER|LABEL|HEALTHCHECK|SHELL)\b",
+                    re.M,
+                ),
+                FG_BLUE + BOLD,
+            ),
             _HL(re.compile(r'"[^"]*"'), FG_GREEN),
         ],
         "log": [
@@ -241,9 +272,7 @@ def _highlight_code(code: str, lang: str) -> str:
         for m in rule.pattern.finditer(code):
             start, end = m.start(), m.end()
             # Skip if overlapping with existing highlight
-            overlaps = any(
-                not (end <= hs or start >= he) for hs, he, _ in highlights
-            )
+            overlaps = any(not (end <= hs or start >= he) for hs, he, _ in highlights)
             if not overlaps:
                 highlights.append((start, end, rule.color))
 
@@ -266,6 +295,7 @@ def _highlight_code(code: str, lang: str) -> str:
 
 
 # ── MarkdownRenderer ─────────────────────────────────────────────────────
+
 
 class MarkdownRenderer:
     """Renders markdown text to the terminal with ANSI colors."""

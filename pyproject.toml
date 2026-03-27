@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "typermd"
-version = "0.1.1"
+version = "0.1.2"
 description = "Markdown rendering for Typer CLI applications — drop-in replacement with syntax highlighting"
 readme = "README.md"
 license = "Apache-2.0"

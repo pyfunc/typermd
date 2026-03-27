@@ -19,7 +19,7 @@ Usage:
 
 from __future__ import annotations
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 __all__ = [
     # typermd extras
     "md",
@@ -97,13 +97,13 @@ get_app_dir = _typer.get_app_dir
 
 # If Typer exposes CallbackType (version-dependent)
 try:
-    CallbackType = _typer.CallbackType
+    CallbackType = _typer.CallbackType  # type: ignore[attr-defined]
 except AttributeError:
     pass
 
 # ── Import typermd rendering ─────────────────────────────────────────────
 
-from typermd.renderer import (
+from typermd.renderer import (  # noqa: E402
     MarkdownRenderer,
     get_renderer,
     looks_like_markdown,
@@ -144,16 +144,18 @@ def echo(
 
     if auto_markdown and text and looks_like_markdown(text):
         import sys
+
         stream = file if file is not None else (sys.stderr if err else sys.stdout)
         use_colors = color if color is not None else True
-        render_markdown(text, stream=stream, use_colors=use_colors)
+        render_markdown(text, stream=stream, use_colors=use_colors)  # type: ignore[arg-type]
         if nl and not text.endswith("\n"):
             (stream if hasattr(stream, "write") else sys.stdout).write("\n")
     else:
-        _original_echo(message, file=file, nl=nl, err=err, color=color)
+        _original_echo(message, file=file, nl=nl, err=err, color=color)  # type: ignore[arg-type]
 
 
 # ── Convenience: table / panel / blockquote ───────────────────────────────
+
 
 def table(
     headers: list[str],
@@ -177,7 +179,9 @@ def table(
     # Header
     header_cells = [h.ljust(w) for h, w in zip(headers, col_widths)]
     sep = renderer._c(" │ ", renderer._c("", "") and "\033[2m")
-    header_line = f"  {sep.join(renderer._c(c, '\033[1m', '\033[36m') for c in header_cells)}"
+    bold = "\033[1m"
+    cyan = "\033[36m"
+    header_line = f"  {sep.join(renderer._c(c, bold, cyan) for c in header_cells)}"
     renderer._wln(header_line)
 
     # Separator
@@ -202,7 +206,7 @@ def panel(
     """Render a bordered panel."""
     renderer = get_renderer()
     lines = content.split("\n")
-    max_len = max((len(strip_ansi(l)) for l in lines), default=0)
+    max_len = max((len(strip_ansi(line)) for line in lines), default=0)
     if title:
         max_len = max(max_len, len(title) + 2)
     box_w = max_len + 4
@@ -214,7 +218,12 @@ def panel(
     renderer._wln(renderer._c(top, style_color))
     for line in lines:
         pad = max_len - len(strip_ansi(line))
-        renderer._wln(renderer._c("│ ", style_color) + renderer._inline(line) + " " * pad + renderer._c(" │", style_color))
+        renderer._wln(
+            renderer._c("│ ", style_color)
+            + renderer._inline(line)
+            + " " * pad
+            + renderer._c(" │", style_color)
+        )
     renderer._wln(renderer._c(bot, style_color))
 
 

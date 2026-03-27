@@ -20,17 +20,14 @@ import sys
 from typing import Any
 
 import click
+
 from typermd.renderer import (
     BOLD,
-    DIM,
-    FG_BLUE,
     FG_CYAN,
-    FG_GRAY,
     FG_YELLOW,
     ITALIC,
     RESET,
     _supports_color,
-    strip_ansi,
 )
 
 
@@ -66,9 +63,9 @@ class MarkdownHelpFormatter(click.HelpFormatter):
         )
         return text
 
-    def write(self, string: str) -> str:
+    def write(self, string: str) -> str:  # type: ignore[override]
         """Override write to apply markdown formatting."""
-        return super().write(self._colorize(string))
+        return super().write(self._colorize(string)) or ""
 
     def write_heading(self, heading: str) -> None:
         """Write a heading with color."""
